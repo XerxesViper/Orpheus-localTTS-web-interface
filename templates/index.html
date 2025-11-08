@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Article to Audio Converter</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container-main {
+            background: white;
+            border-radius: 10px;
+            padding: 40px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            max-width: 600px;
+            width: 100%;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 30px;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .screen {
+            display: none;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        .form-label {
+            font-weight: 500;
+            color: #555;
+            margin-top: 20px;
+        }
+
+        .btn-submit, .btn-action {
+            padding: 12px;
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .btn-choice {
+            width: 100%;
+            padding: 20px;
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .progress-section {
+            margin-top: 30px;
+        }
+
+        .progress-bar {
+            height: 25px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .status-text {
+            text-align: center;
+            margin-top: 15px;
+            font-size: 16px;
+            color: #667eea;
+            font-weight: 500;
+        }
+
+        .error-alert {
+            display: none;
+            margin-bottom: 20px;
+        }
+
+        .success-alert {
+            display: none;
+            margin-bottom: 20px;
+        }
+
+        input, textarea {
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+
+        input:focus, textarea:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+        }
+
+        .preview-box {
+            background: #f8f9fa;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 20px;
+            max-height: 400px;
+            overflow-y: auto;
+            margin: 20px 0;
+        }
+
+        .preview-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .preview-content {
+            font-size: 14px;
+            line-height: 1.6;
+            color: #555;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        #consoleBox {
+            background: #1e1e1e;
+            color: #00ff00;
+            padding: 15px;
+            border-radius: 5px;
+            max-height: 200px;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            border: 1px solid #333;
+            line-height: 1.4;
+        }
+
+        #consoleLogs div {
+            margin-bottom: 5px;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 30px;
+        }
+
+        .button-group button {
+            flex: 1;
+        }
+
+        .loading-spinner {
+            text-align: center;
+            margin: 30px 0;
+        }
+    </style>
+</head>
+<body>
+<div class="container-main">
+    <!-- Screen 1: Choice -->
+    <div id="screen1" class="screen active">
+        <h1>🎙️ Article to Audio</h1>
+        <p style="text-align: center; color: #666; margin-bottom: 30px;">
+            How do you want to input your article?
+        </p>
+        <button
+                id="btnFetchLink"
+                class="btn btn-primary btn-choice"
+                onclick="goToScreen(2)"
+        >
+            🔗 Fetch from Link
+        </button>
+        <button
+                id="btnEnterManual"
+                class="btn btn-secondary btn-choice"
+                onclick="goToScreen(3)"
+        >
+            ✍️ Enter Text Manually
+        </button>
+    </div>
+
+    <!-- Screen 2: Fetch from Link -->
+    <div id="screen2" class="screen">
+        <h1>🔗 Fetch from Link</h1>
+        <div id="errorAlert" class="alert alert-danger error-alert"></div>
+
+        <form id="fetchForm">
+            <label for="urlInput" class="form-label">Article URL</label>
+            <textarea
+                    id="urlInput"
+                    class="form-control"
+                    placeholder="Paste article URL here..."
+                    rows="3"
+                    required
+            ></textarea>
+
+            <button type="submit" class="btn btn-primary btn-submit" style="width: 100%; margin-top: 20px;">
+                Fetch Article
+            </button>
+        </form>
+
+        <button
+                class="btn btn-outline-secondary"
+                onclick="goToScreen(1)"
+                style="width: 100%; margin-top: 10px;"
+        >
+            ← Back
+        </button>
+    </div>
+
+    <!-- Screen 3: Enter Text Manually -->
+    <div id="screen3" class="screen">
+        <h1>✍️ Enter Text Manually</h1>
+        <div id="errorAlert2" class="alert alert-danger error-alert"></div>
+
+        <form id="manualForm">
+            <label for="titleInput" class="form-label">Article Title</label>
+            <input
+                    type="text"
+                    id="titleInput"
+                    class="form-control"
+                    placeholder="Enter article title..."
+                    required
+            />
+
+            <label for="contentInput" class="form-label">Article Content</label>
+            <textarea
+                    id="contentInput"
+                    class="form-control"
+                    placeholder="Paste or type article content here..."
+                    rows="8"
+                    required
+            ></textarea>
+
+            <button type="submit" class="btn btn-primary btn-submit" style="width: 100%; margin-top: 20px;">
+                Proceed to Confirmation
+            </button>
+        </form>
+
+        <button
+                class="btn btn-outline-secondary"
+                onclick="goToScreen(1)"
+                style="width: 100%; margin-top: 10px;"
+        >
+            ← Back
+        </button>
+    </div>
+
+    <!-- Screen 4: Confirmation -->
+    <div id="screen4" class="screen">
+        <h1>✅ Confirm Article</h1>
+
+        <div class="preview-box">
+            <div class="preview-title" id="confirmTitle"></div>
+            <div class="preview-content" id="confirmContent"></div>
+        </div>
+
+        <label for="hardLimitInput" class="form-label">Words per Chunk</label>
+        <input
+                type="number"
+                id="hardLimitInput"
+                class="form-control"
+                value="80"
+                min="50"
+                max="200"
+        />
+        <small class="text-muted">Adjust chunk size (default: 80 words)</small>
+
+        <div class="button-group">
+            <button class="btn btn-success" onclick="startConversion()">
+                ✓ Confirm & Convert
+            </button>
+            <button class="btn btn-outline-danger" onclick="goToScreen(1)">
+                ✕ Cancel
+            </button>
+        </div>
+    </div>
+
+    <!-- Screen 5: Processing -->
+    <div id="screen5" class="screen">
+        <h1>⏳ Processing...</h1>
+
+        <div class="progress-section">
+            <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 10px;">
+                <div class="progress" style="flex: 1;">
+                    <div
+                            id="progressBar"
+                            class="progress-bar progress-bar-striped progress-bar-animated"
+                            role="progressbar"
+                            style="width: 0%"
+                    >
+                    </div>
+                </div>
+                <span id="progressPercent" style="font-weight: 600; color: #667eea; min-width: 50px;">0%</span>
+            </div>
+            <div class="status-text">
+                <span id="statusText">Processing...</span>
+            </div>
+        </div>
+
+        <!-- Console Dropdown -->
+        <button class="btn btn-outline-secondary btn-sm" style="margin-top: 20px; width: 100%;"
+                onclick="toggleConsole()">
+            📋 Show Console Output
+        </button>
+        <div id="consoleBox"
+             style="display: none; margin-top: 15px; background: #1e1e1e; color: #00ff00; padding: 15px; border-radius: 5px; max-height: 200px; overflow-y: auto; font-family: monospace; font-size: 12px; border: 1px solid #333;">
+            <div id="consoleLogs"></div>
+        </div>
+    </div>
+
+    <!-- Screen 6: Success -->
+    <div id="screen6" class="screen">
+        <h1>✅ Success!</h1>
+        <div class="alert alert-success" role="alert">
+            <p style="margin-bottom: 0;">
+                Your audio files have been created and saved to your output folder.
+            </p>
+        </div>
+
+        <button
+                class="btn btn-primary"
+                onclick="goToScreen(1)"
+                style="width: 100%; margin-top: 20px;"
+        >
+            Convert Another Article
+        </button>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    let articleData = {
+        title: null,
+        content: null
+    };
+    let currentArticleId = null;
+    let progressInterval = null;
+
+    function goToScreen(screenNum) {
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+        document.getElementById(`screen${screenNum}`).classList.add('active');
+    }
+
+    // Screen 2: Fetch from Link
+    document.getElementById('fetchForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const url = document.getElementById('urlInput').value.trim();
+        const errorAlert = document.getElementById('errorAlert');
+
+        if (!url) {
+            showError('Please enter a URL', errorAlert);
+            return;
+        }
+
+        errorAlert.style.display = 'none';
+        document.getElementById('fetchForm').style.opacity = '0.5';
+        document.getElementById('fetchForm').style.pointerEvents = 'none';
+
+        try {
+            const response = await fetch('/fetch_article', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({url: url}),
+            });
+
+            if (!response.ok) {
+                const data = await response.json();
+                throw new Error(data.error || 'Failed to fetch article');
+            }
+
+            const data = await response.json();
+            articleData = {
+                title: data.title,
+                content: data.content
+            };
+
+            showConfirmation();
+            goToScreen(4);
+
+        } catch (error) {
+            showError(error.message, errorAlert);
+        } finally {
+            document.getElementById('fetchForm').style.opacity = '1';
+            document.getElementById('fetchForm').style.pointerEvents = 'auto';
+        }
+    });
+
+    // Screen 3: Enter Text Manually
+    document.getElementById('manualForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const title = document.getElementById('titleInput').value.trim();
+        const content = document.getElementById('contentInput').value.trim();
+
+        if (!title || !content) {
+            showError('Please enter both title and content', document.getElementById('errorAlert2'));
+            return;
+        }
+
+        articleData = {
+            title: title,
+            content: content
+        };
+
+        showConfirmation();
+        goToScreen(4);
+    });
+
+    function showConfirmation() {
+        document.getElementById('confirmTitle').textContent = articleData.title;
+        document.getElementById('confirmContent').textContent = articleData.content;
+    }
+
+    async function startConversion() {
+        const hardLimit = parseInt(document.getElementById('hardLimitInput').value);
+        goToScreen(5);
+
+        try {
+            const response = await fetch('/convert', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    url: '',
+                    hard_limit: hardLimit,
+                    title: articleData.title,
+                    content: articleData.content
+                }),
+            });
+
+            if (!response.ok) {
+                const data = await response.json();
+                throw new Error(data.error || 'Conversion failed');
+            }
+
+            const data = await response.json();
+            currentArticleId = data.article_id;
+            startProgressTracking();
+
+        } catch (error) {
+            alert('Error: ' + error.message);
+            goToScreen(1);
+        }
+    }
+
+    function escapeHtml(text) {
+        const map = {
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            '"': '&quot;',
+            "'": '&#039;'
+        };
+        return text.replace(/[&<>"']/g, m => map[m]);
+    }
+
+    function startProgressTracking() {
+        progressInterval = setInterval(async () => {
+            try {
+                const response = await fetch(`/progress/${currentArticleId}`);
+                const data = await response.json();
+
+                // Fetch logs
+                const logsResponse = await fetch(`/logs/${currentArticleId}`);
+                const logsData = await logsResponse.json();
+                updateConsoleLogs(logsData.logs);
+
+                if (data.error) {
+                    alert('Error: ' + data.error);
+                    clearInterval(progressInterval);
+                    goToScreen(1);
+                    return;
+                }
+
+                const total = data.total || 1;
+                const current = data.current || 0;
+                const percentage = total > 0 ? Math.round((current / total) * 100) : 0;
+
+                document.getElementById('progressBar').style.width = percentage + '%';
+                document.getElementById('progressPercent').textContent = percentage + '%';
+
+                if (data.status === 'fetching') {
+                    document.getElementById('statusText').textContent = 'Fetching article...';
+                } else if (data.status === 'converting') {
+                    document.getElementById('statusText').textContent = `Converting: ${current}/${total} chunks done!`;
+                } else if (data.status === 'completed') {
+                    clearInterval(progressInterval);
+                    document.getElementById('progressBar').classList.remove('progress-bar-animated');
+                    document.getElementById('progressBar').style.width = '100%';
+                    document.getElementById('progressPercent').textContent = '100%';
+                    document.getElementById('statusText').textContent = 'Completed!';
+
+                    setTimeout(() => {
+                        goToScreen(6);
+                    }, 1500);
+                }
+
+            } catch (error) {
+                console.error(error);
+                clearInterval(progressInterval);
+            }
+        }, 1000);
+    }
+
+    function updateConsoleLogs(logs) {
+        const consoleBox = document.getElementById('consoleLogs');
+        if (consoleBox && logs && logs.length > 0) {
+            consoleBox.innerHTML = logs.map(log => `<div>${escapeHtml(log)}</div>`).join('');
+            // Auto-scroll to bottom
+            consoleBox.parentElement.scrollTop = consoleBox.parentElement.scrollHeight;
+        }
+    }
+
+    function toggleConsole() {
+        const consoleBox = document.getElementById('consoleBox');
+        consoleBox.style.display = consoleBox.style.display === 'none' ? 'block' : 'none';
+    }
+
+    function showError(message, alertElement) {
+        alertElement.textContent = message;
+        alertElement.style.display = 'block';
+    }
+</script>
+</body>
+</html>
