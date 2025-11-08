@@ -10,9 +10,87 @@
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             display: flex;
-            align-items: center;
-            justify-content: center;
             padding: 20px;
+            gap: 20px;
+        }
+
+        .sidebar {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            width: 300px;
+            height: fit-content;
+            position: sticky;
+            top: 20px;
+        }
+
+        .sidebar h5 {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        .job-item {
+            background: #f8f9fa;
+            padding: 12px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 14px;
+        }
+
+        .job-title {
+            font-weight: 500;
+            color: #333;
+            flex: 1;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .job-position {
+            background: #667eea;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 3px;
+            font-weight: 600;
+            font-size: 12px;
+            margin-right: 10px;
+        }
+
+        .job-delete {
+            background: none;
+            border: none;
+            color: #dc3545;
+            cursor: pointer;
+            font-size: 16px;
+            padding: 0;
+        }
+
+        .job-delete:hover {
+            color: #c82333;
+        }
+
+        .job-current {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+        }
+
+        .job-completed {
+            background: #d1ecf1;
+            border-left: 4px solid #17a2b8;
+        }
+
+        .empty-state {
+            color: #999;
+            font-size: 13px;
+            padding: 10px;
+            text-align: center;
         }
 
         .container-main {
@@ -21,7 +99,7 @@
             padding: 40px;
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
             max-width: 600px;
-            width: 100%;
+            flex: 1;
         }
 
         h1 {
@@ -149,13 +227,51 @@
             flex: 1;
         }
 
-        .loading-spinner {
+        .queue-position-badge {
+            background: #ffc107;
+            color: #333;
+            padding: 10px 15px;
+            border-radius: 5px;
             text-align: center;
-            margin: 30px 0;
+            margin: 20px 0;
+            font-weight: 600;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                position: static;
+            }
         }
     </style>
 </head>
 <body>
+<!-- SIDEBAR -->
+<div class="sidebar">
+    <!-- CURRENT -->
+    <h5>🔴 Running</h5>
+    <div id="currentJobContainer">
+        <div class="empty-state">No job running</div>
+    </div>
+
+    <!-- QUEUED -->
+    <h5 style="margin-top: 30px;">⏳ Queued</h5>
+    <div id="queuedJobsContainer">
+        <div class="empty-state">Queue is empty</div>
+    </div>
+
+    <!-- COMPLETED -->
+    <h5 style="margin-top: 30px;">✅ Completed</h5>
+    <div id="completedJobsContainer">
+        <div class="empty-state">No completed jobs</div>
+    </div>
+</div>
+
+<!-- MAIN CONTENT -->
 <div class="container-main">
     <!-- Screen 1: Choice -->
     <div id="screen1" class="screen active">
@@ -232,7 +348,8 @@
                     required
             ></textarea>
 
-            <button type="submit" class="btn btn-primary btn-submit" style="width: 100%; margin-top: 20px;">
+            <button type="submit" class="btn btn-primary btn-submit"
+                    style="width: 100%; margin-top: 20px;">
                 Proceed to Confirmation
             </button>
         </form>
@@ -267,8 +384,8 @@
         <small class="text-muted">Adjust chunk size (default: 80 words)</small>
 
         <div class="button-group">
-            <button class="btn btn-success" onclick="startConversion()">
-                ✓ Confirm & Convert
+            <button class="btn btn-success" onclick="addToQueue()">
+                ✓ Add to Queue
             </button>
             <button class="btn btn-outline-danger" onclick="goToScreen(1)">
                 ✕ Cancel
@@ -276,8 +393,30 @@
         </div>
     </div>
 
-    <!-- Screen 5: Processing -->
+    <!-- Screen 5: Queued -->
     <div id="screen5" class="screen">
+        <h1>⏳ Added to Queue!</h1>
+
+        <div class="queue-position-badge" id="queuePositionBadge">
+            Position #2
+        </div>
+
+        <p style="text-align: center; color: #666; margin-bottom: 20px;">
+            Your job has been queued. You can submit more articles or go back to home.
+        </p>
+
+        <div class="button-group">
+            <button class="btn btn-primary" onclick="goToScreen(1)">
+                ← Back to Home
+            </button>
+            <button class="btn btn-secondary" onclick="goToScreen(2)">
+                + Add Another
+            </button>
+        </div>
+    </div>
+
+    <!-- Screen 6: Processing -->
+    <div id="screen6" class="screen">
         <h1>⏳ Processing...</h1>
 
         <div class="progress-section">
@@ -298,7 +437,6 @@
             </div>
         </div>
 
-        <!-- Console Dropdown -->
         <button class="btn btn-outline-secondary btn-sm" style="margin-top: 20px; width: 100%;"
                 onclick="toggleConsole()">
             📋 Show Console Output
@@ -307,10 +445,18 @@
              style="display: none; margin-top: 15px; background: #1e1e1e; color: #00ff00; padding: 15px; border-radius: 5px; max-height: 200px; overflow-y: auto; font-family: monospace; font-size: 12px; border: 1px solid #333;">
             <div id="consoleLogs"></div>
         </div>
+
+        <button
+                class="btn btn-outline-secondary"
+                onclick="goToScreen(1)"
+                style="width: 100%; margin-top: 20px;"
+        >
+            ← Back to Home
+        </button>
     </div>
 
-    <!-- Screen 6: Success -->
-    <div id="screen6" class="screen">
+    <!-- Screen 7: Success -->
+    <div id="screen7" class="screen">
         <h1>✅ Success!</h1>
         <div class="alert alert-success" role="alert">
             <p style="margin-bottom: 0;">
@@ -334,8 +480,10 @@
         title: null,
         content: null
     };
-    let currentArticleId = null;
+    let currentJobId = null;
+    let currentViewedJobId = null;
     let progressInterval = null;
+    let queueStatusInterval = null;
 
     function goToScreen(screenNum) {
         document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
@@ -411,9 +559,8 @@
         document.getElementById('confirmContent').textContent = articleData.content;
     }
 
-    async function startConversion() {
+    async function addToQueue() {
         const hardLimit = parseInt(document.getElementById('hardLimitInput').value);
-        goToScreen(5);
 
         try {
             const response = await fetch('/convert', {
@@ -429,16 +576,23 @@
 
             if (!response.ok) {
                 const data = await response.json();
-                throw new Error(data.error || 'Conversion failed');
+                if (response.status === 429) {
+                    alert('Queue is full! ' + data.error);
+                } else {
+                    throw new Error(data.error || 'Failed to add to queue');
+                }
+                return;
             }
 
             const data = await response.json();
-            currentArticleId = data.article_id;
-            startProgressTracking();
+            currentJobId = data.job_id;
+            const position = data.position;
+
+            document.getElementById('queuePositionBadge').textContent = `Position #${position}`;
+            goToScreen(5);
 
         } catch (error) {
             alert('Error: ' + error.message);
-            goToScreen(1);
         }
     }
 
@@ -453,50 +607,139 @@
         return text.replace(/[&<>"']/g, m => map[m]);
     }
 
-    function startProgressTracking() {
+    // Sidebar: Update queue status
+    async function updateQueueStatus() {
+        try {
+            const response = await fetch('/queue/status');
+            const data = await response.json();
+
+            // Update current
+            const currentContainer = document.getElementById('currentJobContainer');
+            if (data.current) {
+                currentContainer.innerHTML = `
+                    <div class="job-item job-current">
+                        <span class="job-position">▶</span>
+                        <span class="job-title">${escapeHtml(data.current.title)}</span>
+                        <button class="job-delete" onclick="cancelJob(${data.current.job_id})" title="Cancel">×</button>
+                    </div>
+                    ${currentViewedJobId === data.current.job_id ? '' :
+                    `<button class="btn btn-sm btn-info" style="width: 100%; margin-top: 5px;" onclick="viewJobProgress(${data.current.job_id})">View Progress</button>`}
+                `;
+
+                // If this is our job and not viewing, auto-open it
+                if (currentJobId === data.current.job_id && currentViewedJobId !== data.current.job_id) {
+                    viewJobProgress(data.current.job_id);
+                }
+            } else {
+                currentContainer.innerHTML = '<div class="empty-state">No job running</div>';
+            }
+
+            // Update queued
+            const queuedContainer = document.getElementById('queuedJobsContainer');
+            if (data.queued.length > 0) {
+                queuedContainer.innerHTML = data.queued.map(job => `
+                    <div class="job-item">
+                        <span class="job-position">${job.position}</span>
+                        <span class="job-title">${escapeHtml(job.title)}</span>
+                        <button class="job-delete" onclick="cancelJob(${job.job_id})" title="Cancel">×</button>
+                    </div>
+                `).join('');
+            } else {
+                queuedContainer.innerHTML = '<div class="empty-state">Queue is empty</div>';
+            }
+
+            // Update completed
+            const completedContainer = document.getElementById('completedJobsContainer');
+            if (data.completed.length > 0) {
+                completedContainer.innerHTML = data.completed.map(job => `
+                    <div class="job-item job-completed">
+                        <span style="color: #28a745; font-weight: 600;">✓</span>
+                        <span class="job-title">${escapeHtml(job.title)}</span>
+                    </div>
+                `).join('');
+            } else {
+                completedContainer.innerHTML = '<div class="empty-state">No completed jobs</div>';
+            }
+
+        } catch (error) {
+            console.error('Error updating queue:', error);
+        }
+    }
+
+    async function cancelJob(jobId) {
+        if (!confirm('Cancel this job?')) return;
+
+        try {
+            const response = await fetch(`/queue/cancel/${jobId}`, {
+                method: 'POST'
+            });
+
+            if (response.ok) {
+                updateQueueStatus();
+            } else {
+                const data = await response.json();
+                alert('Error: ' + data.error);
+            }
+        } catch (error) {
+            alert('Error: ' + error.message);
+        }
+    }
+
+    function viewJobProgress(jobId) {
+        currentViewedJobId = jobId;
+        startProgressTracking(jobId);
+        goToScreen(6);
+    }
+
+    function startProgressTracking(jobId) {
+        if (progressInterval) clearInterval(progressInterval);
+
         progressInterval = setInterval(async () => {
             try {
-                const response = await fetch(`/progress/${currentArticleId}`);
-                const data = await response.json();
+                // Fetch progress
+                const progressResponse = await fetch(`/progress/${jobId}`);
+                const progressData = await progressResponse.json();
 
                 // Fetch logs
-                const logsResponse = await fetch(`/logs/${currentArticleId}`);
+                const logsResponse = await fetch(`/logs/${jobId}`);
                 const logsData = await logsResponse.json();
                 updateConsoleLogs(logsData.logs);
 
-                if (data.error) {
-                    alert('Error: ' + data.error);
+                if (progressData.error) {
+                    alert('Error: ' + progressData.error);
                     clearInterval(progressInterval);
                     goToScreen(1);
                     return;
                 }
 
-                const total = data.total || 1;
-                const current = data.current || 0;
+                const total = progressData.total || 1;
+                const current = progressData.current || 0;
                 const percentage = total > 0 ? Math.round((current / total) * 100) : 0;
 
                 document.getElementById('progressBar').style.width = percentage + '%';
                 document.getElementById('progressPercent').textContent = percentage + '%';
 
-                if (data.status === 'fetching') {
-                    document.getElementById('statusText').textContent = 'Fetching article...';
-                } else if (data.status === 'converting') {
+                if (progressData.status === 'converting') {
                     document.getElementById('statusText').textContent = `Converting: ${current}/${total} chunks done!`;
-                } else if (data.status === 'completed') {
+                } else if (progressData.status === 'queued') {
+                    document.getElementById('statusText').textContent = 'Waiting in queue...';
+                } else if (progressData.status === 'completed') {
                     clearInterval(progressInterval);
-                    document.getElementById('progressBar').classList.remove('progress-bar-animated');
+                    document.getElementById('progressBar').classList.remove(
+                        'progress-bar-animated');
                     document.getElementById('progressBar').style.width = '100%';
                     document.getElementById('progressPercent').textContent = '100%';
                     document.getElementById('statusText').textContent = 'Completed!';
 
                     setTimeout(() => {
-                        goToScreen(6);
-                    }, 1500);
+                        currentViewedJobId = null;
+                        goToScreen(1);
+                        updateQueueStatus();
+                    }, 2000);
                 }
 
             } catch (error) {
                 console.error(error);
-                clearInterval(progressInterval);
             }
         }, 1000);
     }
@@ -505,7 +748,6 @@
         const consoleBox = document.getElementById('consoleLogs');
         if (consoleBox && logs && logs.length > 0) {
             consoleBox.innerHTML = logs.map(log => `<div>${escapeHtml(log)}</div>`).join('');
-            // Auto-scroll to bottom
             consoleBox.parentElement.scrollTop = consoleBox.parentElement.scrollHeight;
         }
     }
@@ -519,6 +761,10 @@
         alertElement.textContent = message;
         alertElement.style.display = 'block';
     }
+
+    // Start updating sidebar every 2 seconds
+    updateQueueStatus();
+    queueStatusInterval = setInterval(updateQueueStatus, 2000);
 </script>
 </body>
 </html>
