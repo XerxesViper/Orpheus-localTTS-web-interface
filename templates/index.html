@@ -1,10 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Article to Audio Converter</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    />
     <style>
         body {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -39,7 +42,7 @@
             border-radius: 5px;
             margin-bottom: 10px;
             display: flex;
-            justify-content: space-between;
+            gap: 8px;
             align-items: center;
             font-size: 14px;
         }
@@ -51,6 +54,7 @@
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
+            cursor: pointer;
         }
 
         .job-position {
@@ -60,7 +64,7 @@
             border-radius: 3px;
             font-weight: 600;
             font-size: 12px;
-            margin-right: 10px;
+            margin-right: 4px;
         }
 
         .job-delete {
@@ -84,6 +88,14 @@
         .job-completed {
             background: #d1ecf1;
             border-left: 4px solid #17a2b8;
+        }
+
+        .job-percent {
+            color: #667eea;
+            font-weight: 600;
+            white-space: nowrap;
+            font-size: 12px;
+            margin-left: 0;
         }
 
         .empty-state {
@@ -123,7 +135,8 @@
             margin-top: 20px;
         }
 
-        .btn-submit, .btn-action {
+        .btn-submit,
+        .btn-action {
             padding: 12px;
             font-size: 16px;
             font-weight: 600;
@@ -165,12 +178,14 @@
             margin-bottom: 20px;
         }
 
-        input, textarea {
+        input,
+        textarea {
             border-radius: 5px;
             border: 1px solid #ddd;
         }
 
-        input:focus, textarea:focus {
+        input:focus,
+        textarea:focus {
             border-color: #667eea;
             box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
         }
@@ -280,16 +295,16 @@
             How do you want to input your article?
         </p>
         <button
-                id="btnFetchLink"
-                class="btn btn-primary btn-choice"
-                onclick="goToScreen(2)"
+            id="btnFetchLink"
+            class="btn btn-primary btn-choice"
+            onclick="goToScreen(2)"
         >
             🔗 Fetch from Link
         </button>
         <button
-                id="btnEnterManual"
-                class="btn btn-secondary btn-choice"
-                onclick="goToScreen(3)"
+            id="btnEnterManual"
+            class="btn btn-secondary btn-choice"
+            onclick="goToScreen(3)"
         >
             ✍️ Enter Text Manually
         </button>
@@ -303,22 +318,26 @@
         <form id="fetchForm">
             <label for="urlInput" class="form-label">Article URL</label>
             <textarea
-                    id="urlInput"
-                    class="form-control"
-                    placeholder="Paste article URL here..."
-                    rows="3"
-                    required
+                id="urlInput"
+                class="form-control"
+                placeholder="Paste article URL here..."
+                rows="3"
+                required
             ></textarea>
 
-            <button type="submit" class="btn btn-primary btn-submit" style="width: 100%; margin-top: 20px;">
+            <button
+                type="submit"
+                class="btn btn-primary btn-submit"
+                style="width: 100%; margin-top: 20px;"
+            >
                 Fetch Article
             </button>
         </form>
 
         <button
-                class="btn btn-outline-secondary"
-                onclick="goToScreen(1)"
-                style="width: 100%; margin-top: 10px;"
+            class="btn btn-outline-secondary"
+            onclick="goToScreen(1)"
+            style="width: 100%; margin-top: 10px;"
         >
             ← Back
         </button>
@@ -332,32 +351,35 @@
         <form id="manualForm">
             <label for="titleInput" class="form-label">Article Title</label>
             <input
-                    type="text"
-                    id="titleInput"
-                    class="form-control"
-                    placeholder="Enter article title..."
-                    required
+                type="text"
+                id="titleInput"
+                class="form-control"
+                placeholder="Enter article title..."
+                required
             />
 
             <label for="contentInput" class="form-label">Article Content</label>
             <textarea
-                    id="contentInput"
-                    class="form-control"
-                    placeholder="Paste or type article content here..."
-                    rows="8"
-                    required
+                id="contentInput"
+                class="form-control"
+                placeholder="Paste or type article content here..."
+                rows="8"
+                required
             ></textarea>
 
-            <button type="submit" class="btn btn-primary btn-submit"
-                    style="width: 100%; margin-top: 20px;">
+            <button
+                type="submit"
+                class="btn btn-primary btn-submit"
+                style="width: 100%; margin-top: 20px;"
+            >
                 Proceed to Confirmation
             </button>
         </form>
 
         <button
-                class="btn btn-outline-secondary"
-                onclick="goToScreen(1)"
-                style="width: 100%; margin-top: 10px;"
+            class="btn btn-outline-secondary"
+            onclick="goToScreen(1)"
+            style="width: 100%; margin-top: 10px;"
         >
             ← Back
         </button>
@@ -374,12 +396,12 @@
 
         <label for="hardLimitInput" class="form-label">Words per Chunk</label>
         <input
-                type="number"
-                id="hardLimitInput"
-                class="form-control"
-                value="80"
-                min="50"
-                max="200"
+            type="number"
+            id="hardLimitInput"
+            class="form-control"
+            value="80"
+            min="50"
+            max="200"
         />
         <small class="text-muted">Adjust chunk size (default: 80 words)</small>
 
@@ -402,7 +424,8 @@
         </div>
 
         <p style="text-align: center; color: #666; margin-bottom: 20px;">
-            Your job has been queued. You can submit more articles or go back to home.
+            Your job has been queued. You can submit more articles or go back to
+            home.
         </p>
 
         <div class="button-group">
@@ -420,36 +443,67 @@
         <h1>⏳ Processing...</h1>
 
         <div class="progress-section">
-            <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 10px;">
+            <div
+                style="
+                    display: flex;
+                    align-items: center;
+                    gap: 15px;
+                    margin-bottom: 10px;
+                "
+            >
                 <div class="progress" style="flex: 1;">
                     <div
-                            id="progressBar"
-                            class="progress-bar progress-bar-striped progress-bar-animated"
-                            role="progressbar"
-                            style="width: 0%"
-                    >
-                    </div>
+                        id="progressBar"
+                        class="progress-bar progress-bar-striped progress-bar-animated"
+                        role="progressbar"
+                        style="width: 0%"
+                    ></div>
                 </div>
-                <span id="progressPercent" style="font-weight: 600; color: #667eea; min-width: 50px;">0%</span>
+                <span
+                    id="progressPercent"
+                    style="
+                        font-weight: 600;
+                        color: #667eea;
+                        min-width: 50px;
+                    "
+                    >0%</span
+                >
             </div>
             <div class="status-text">
                 <span id="statusText">Processing...</span>
             </div>
         </div>
 
-        <button class="btn btn-outline-secondary btn-sm" style="margin-top: 20px; width: 100%;"
-                onclick="toggleConsole()">
+        <button
+            class="btn btn-outline-secondary btn-sm"
+            style="margin-top: 20px; width: 100%;"
+            onclick="toggleConsole()"
+        >
             📋 Show Console Output
         </button>
-        <div id="consoleBox"
-             style="display: none; margin-top: 15px; background: #1e1e1e; color: #00ff00; padding: 15px; border-radius: 5px; max-height: 200px; overflow-y: auto; font-family: monospace; font-size: 12px; border: 1px solid #333;">
+        <div
+            id="consoleBox"
+            style="
+                display: none;
+                margin-top: 15px;
+                background: #1e1e1e;
+                color: #00ff00;
+                padding: 15px;
+                border-radius: 5px;
+                max-height: 200px;
+                overflow-y: auto;
+                font-family: monospace;
+                font-size: 12px;
+                border: 1px solid #333;
+            "
+        >
             <div id="consoleLogs"></div>
         </div>
 
         <button
-                class="btn btn-outline-secondary"
-                onclick="goToScreen(1)"
-                style="width: 100%; margin-top: 20px;"
+            class="btn btn-outline-secondary"
+            onclick="goToScreen(1)"
+            style="width: 100%; margin-top: 20px;"
         >
             ← Back to Home
         </button>
@@ -460,14 +514,15 @@
         <h1>✅ Success!</h1>
         <div class="alert alert-success" role="alert">
             <p style="margin-bottom: 0;">
-                Your audio files have been created and saved to your output folder.
+                Your audio files have been created and saved to your output
+                folder.
             </p>
         </div>
 
         <button
-                class="btn btn-primary"
-                onclick="goToScreen(1)"
-                style="width: 100%; margin-top: 20px;"
+            class="btn btn-primary"
+            onclick="goToScreen(1)"
+            style="width: 100%; margin-top: 20px;"
         >
             Convert Another Article
         </button>
@@ -486,92 +541,106 @@
     let queueStatusInterval = null;
 
     function goToScreen(screenNum) {
-        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+        document
+            .querySelectorAll('.screen')
+            .forEach((s) => s.classList.remove('active'));
         document.getElementById(`screen${screenNum}`).classList.add('active');
     }
 
     // Screen 2: Fetch from Link
-    document.getElementById('fetchForm').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const url = document.getElementById('urlInput').value.trim();
-        const errorAlert = document.getElementById('errorAlert');
+    document
+        .getElementById('fetchForm')
+        .addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const url = document.getElementById('urlInput').value.trim();
+            const errorAlert = document.getElementById('errorAlert');
 
-        if (!url) {
-            showError('Please enter a URL', errorAlert);
-            return;
-        }
-
-        errorAlert.style.display = 'none';
-        document.getElementById('fetchForm').style.opacity = '0.5';
-        document.getElementById('fetchForm').style.pointerEvents = 'none';
-
-        try {
-            const response = await fetch('/fetch_article', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({url: url}),
-            });
-
-            if (!response.ok) {
-                const data = await response.json();
-                throw new Error(data.error || 'Failed to fetch article');
+            if (!url) {
+                showError('Please enter a URL', errorAlert);
+                return;
             }
 
-            const data = await response.json();
+            errorAlert.style.display = 'none';
+            document.getElementById('fetchForm').style.opacity = '0.5';
+            document.getElementById('fetchForm').style.pointerEvents = 'none';
+
+            try {
+                const response = await fetch('/fetch_article', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ url: url })
+                });
+
+                if (!response.ok) {
+                    const data = await response.json();
+                    throw new Error(data.error || 'Failed to fetch article');
+                }
+
+                const data = await response.json();
+                articleData = {
+                    title: data.title,
+                    content: data.content
+                };
+
+                showConfirmation();
+                goToScreen(4);
+            } catch (error) {
+                showError(error.message, errorAlert);
+            } finally {
+                document.getElementById('fetchForm').style.opacity = '1';
+                document.getElementById('fetchForm').style.pointerEvents =
+                    'auto';
+            }
+        });
+
+    // Screen 3: Enter Text Manually
+    document
+        .getElementById('manualForm')
+        .addEventListener('submit', (e) => {
+            e.preventDefault();
+            const title = document.getElementById('titleInput').value.trim();
+            const content =
+                document.getElementById('contentInput').value.trim();
+
+            if (!title || !content) {
+                showError(
+                    'Please enter both title and content',
+                    document.getElementById('errorAlert2')
+                );
+                return;
+            }
+
             articleData = {
-                title: data.title,
-                content: data.content
+                title: title,
+                content: content
             };
 
             showConfirmation();
             goToScreen(4);
-
-        } catch (error) {
-            showError(error.message, errorAlert);
-        } finally {
-            document.getElementById('fetchForm').style.opacity = '1';
-            document.getElementById('fetchForm').style.pointerEvents = 'auto';
-        }
-    });
-
-    // Screen 3: Enter Text Manually
-    document.getElementById('manualForm').addEventListener('submit', (e) => {
-        e.preventDefault();
-        const title = document.getElementById('titleInput').value.trim();
-        const content = document.getElementById('contentInput').value.trim();
-
-        if (!title || !content) {
-            showError('Please enter both title and content', document.getElementById('errorAlert2'));
-            return;
-        }
-
-        articleData = {
-            title: title,
-            content: content
-        };
-
-        showConfirmation();
-        goToScreen(4);
-    });
+        });
 
     function showConfirmation() {
-        document.getElementById('confirmTitle').textContent = articleData.title;
-        document.getElementById('confirmContent').textContent = articleData.content;
+        document.getElementById('confirmTitle').textContent =
+            articleData.title;
+        document.getElementById('confirmContent').textContent =
+            articleData.content;
     }
 
     async function addToQueue() {
-        const hardLimit = parseInt(document.getElementById('hardLimitInput').value);
+        const hardLimit = parseInt(
+            document.getElementById('hardLimitInput').value
+        );
 
         try {
             const response = await fetch('/convert', {
                 method: 'POST',
-                headers: {'Content-Type': 'application/json'},
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     url: '',
                     hard_limit: hardLimit,
                     title: articleData.title,
                     content: articleData.content
-                }),
+                })
             });
 
             if (!response.ok) {
@@ -588,9 +657,10 @@
             currentJobId = data.job_id;
             const position = data.position;
 
-            document.getElementById('queuePositionBadge').textContent = `Position #${position}`;
+            document.getElementById(
+                'queuePositionBadge'
+            ).textContent = `Position #${position}`;
             goToScreen(5);
-
         } catch (error) {
             alert('Error: ' + error.message);
         }
@@ -604,7 +674,7 @@
             '"': '&quot;',
             "'": '&#039;'
         };
-        return text.replace(/[&<>"']/g, m => map[m]);
+        return text.replace(/[&<>"']/g, (m) => map[m]);
     }
 
     // Sidebar: Update queue status
@@ -614,53 +684,98 @@
             const data = await response.json();
 
             // Update current
-            const currentContainer = document.getElementById('currentJobContainer');
+            const currentContainer =
+                document.getElementById('currentJobContainer');
             if (data.current) {
+                // fetch current progress to show %
+                const p = await fetch(
+                    `/progress/${data.current.job_id}`
+                )
+                    .then((r) => r.json())
+                    .catch(() => ({}));
+                const pct =
+                    p && p.total > 0
+                        ? Math.round(((p.current || 0) / p.total) * 100)
+                        : p.status === 'completed'
+                        ? 100
+                        : 0;
+
                 currentContainer.innerHTML = `
                     <div class="job-item job-current">
                         <span class="job-position">▶</span>
-                        <span class="job-title">${escapeHtml(data.current.title)}</span>
+                        <span class="job-title" onclick="viewJobProgress(${data.current.job_id})" title="View details">
+                          ${escapeHtml(data.current.title)}
+                        </span>
+                        <span class="job-percent">${pct}%</span>
                         <button class="job-delete" onclick="cancelJob(${data.current.job_id})" title="Cancel">×</button>
-                    </div>
-                    ${currentViewedJobId === data.current.job_id ? '' :
-                    `<button class="btn btn-sm btn-info" style="width: 100%; margin-top: 5px;" onclick="viewJobProgress(${data.current.job_id})">View Progress</button>`}
-                `;
-
+                    </div>`;
                 // If this is our job and not viewing, auto-open it
-                if (currentJobId === data.current.job_id && currentViewedJobId !== data.current.job_id) {
+                if (
+                    currentJobId === data.current.job_id &&
+                    currentViewedJobId !== data.current.job_id
+                ) {
                     viewJobProgress(data.current.job_id);
                 }
             } else {
-                currentContainer.innerHTML = '<div class="empty-state">No job running</div>';
+                currentContainer.innerHTML =
+                    '<div class="empty-state">No job running</div>';
             }
 
             // Update queued
-            const queuedContainer = document.getElementById('queuedJobsContainer');
+            const queuedContainer =
+                document.getElementById('queuedJobsContainer');
             if (data.queued.length > 0) {
-                queuedContainer.innerHTML = data.queued.map(job => `
-                    <div class="job-item">
-                        <span class="job-position">${job.position}</span>
-                        <span class="job-title">${escapeHtml(job.title)}</span>
-                        <button class="job-delete" onclick="cancelJob(${job.job_id})" title="Cancel">×</button>
-                    </div>
-                `).join('');
+                const html = await Promise.all(
+                    data.queued.map(async (job) => {
+                        let pct = 0;
+                        try {
+                            const p = await fetch(
+                                `/progress/${job.job_id}`
+                            ).then((r) => r.json());
+                            pct =
+                                p && p.total > 0
+                                    ? Math.round(
+                                          ((p.current || 0) / p.total) * 100
+                                      )
+                                    : 0;
+                        } catch (e) {}
+                        return `
+                          <div class="job-item">
+                              <span class="job-position">${job.position}</span>
+                              <span class="job-title" onclick="viewJobProgress(${job.job_id})" title="View details">
+                                ${escapeHtml(job.title)}
+                              </span>
+                              <span class="job-percent">${pct}%</span>
+                              <button class="job-delete" onclick="cancelJob(${job.job_id})" title="Cancel">×</button>
+                          </div>`;
+                    })
+                );
+                queuedContainer.innerHTML = html.join('');
             } else {
-                queuedContainer.innerHTML = '<div class="empty-state">Queue is empty</div>';
+                queuedContainer.innerHTML =
+                    '<div class="empty-state">Queue is empty</div>';
             }
 
             // Update completed
-            const completedContainer = document.getElementById('completedJobsContainer');
+            const completedContainer =
+                document.getElementById('completedJobsContainer');
             if (data.completed.length > 0) {
-                completedContainer.innerHTML = data.completed.map(job => `
+                completedContainer.innerHTML = data.completed
+                    .map(
+                        (job) => `
                     <div class="job-item job-completed">
                         <span style="color: #28a745; font-weight: 600;">✓</span>
-                        <span class="job-title">${escapeHtml(job.title)}</span>
-                    </div>
-                `).join('');
+                        <span class="job-title" onclick="viewJobProgress(${job.job_id})" title="View details">
+                          ${escapeHtml(job.title)}
+                        </span>
+                        <span class="job-percent">100%</span>
+                    </div>`
+                    )
+                    .join('');
             } else {
-                completedContainer.innerHTML = '<div class="empty-state">No completed jobs</div>';
+                completedContainer.innerHTML =
+                    '<div class="empty-state">No completed jobs</div>';
             }
-
         } catch (error) {
             console.error('Error updating queue:', error);
         }
@@ -714,30 +829,34 @@
 
                 const total = progressData.total || 1;
                 const current = progressData.current || 0;
-                const percentage = total > 0 ? Math.round((current / total) * 100) : 0;
+                const percentage =
+                    total > 0 ? Math.round((current / total) * 100) : 0;
 
-                document.getElementById('progressBar').style.width = percentage + '%';
-                document.getElementById('progressPercent').textContent = percentage + '%';
+                document.getElementById('progressBar').style.width =
+                    percentage + '%';
+                document.getElementById('progressPercent').textContent =
+                    percentage + '%';
 
                 if (progressData.status === 'converting') {
-                    document.getElementById('statusText').textContent = `Converting: ${current}/${total} chunks done!`;
+                    document.getElementById(
+                        'statusText'
+                    ).textContent = `Converting: ${current}/${total} chunks done!`;
                 } else if (progressData.status === 'queued') {
-                    document.getElementById('statusText').textContent = 'Waiting in queue...';
+                    document.getElementById('statusText').textContent =
+                        'Waiting in queue...';
                 } else if (progressData.status === 'completed') {
                     clearInterval(progressInterval);
-                    document.getElementById('progressBar').classList.remove(
-                        'progress-bar-animated');
-                    document.getElementById('progressBar').style.width = '100%';
-                    document.getElementById('progressPercent').textContent = '100%';
-                    document.getElementById('statusText').textContent = 'Completed!';
-
-                    setTimeout(() => {
-                        currentViewedJobId = null;
-                        goToScreen(1);
-                        updateQueueStatus();
-                    }, 2000);
+                    document
+                        .getElementById('progressBar')
+                        .classList.remove('progress-bar-animated');
+                    document.getElementById('progressBar').style.width =
+                        '100%';
+                    document.getElementById('progressPercent').textContent =
+                        '100%';
+                    document.getElementById('statusText').textContent =
+                        'Completed!';
+                    // stay here so the user can read console; they can go back manually
                 }
-
             } catch (error) {
                 console.error(error);
             }
@@ -747,14 +866,18 @@
     function updateConsoleLogs(logs) {
         const consoleBox = document.getElementById('consoleLogs');
         if (consoleBox && logs && logs.length > 0) {
-            consoleBox.innerHTML = logs.map(log => `<div>${escapeHtml(log)}</div>`).join('');
-            consoleBox.parentElement.scrollTop = consoleBox.parentElement.scrollHeight;
+            consoleBox.innerHTML = logs
+                .map((log) => `<div>${escapeHtml(log)}</div>`)
+                .join('');
+            consoleBox.parentElement.scrollTop =
+                consoleBox.parentElement.scrollHeight;
         }
     }
 
     function toggleConsole() {
         const consoleBox = document.getElementById('consoleBox');
-        consoleBox.style.display = consoleBox.style.display === 'none' ? 'block' : 'none';
+        consoleBox.style.display =
+            consoleBox.style.display === 'none' ? 'block' : 'none';
     }
 
     function showError(message, alertElement) {
